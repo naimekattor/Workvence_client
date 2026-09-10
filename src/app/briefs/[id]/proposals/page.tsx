@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 import { axiosFetch } from "@/utils";
 import { useUserStore } from "@/store/userStore";
 import { Loader } from "@/components";
-import "./Proposals.scss";
 
 const Proposals = () => {
   const router = useRouter();
@@ -95,30 +94,31 @@ const Proposals = () => {
     },
   });
 
-  const getRankBadgeClass = (index: number) => {
-    if (index === 0) return "gold";
-    if (index === 1) return "silver";
-    if (index === 2) return "bronze";
-    return "";
+  const getRankBadgeClasses = (index: number) => {
+    if (index === 0) return "bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-xs";
+    if (index === 1) return "bg-gradient-to-br from-slate-400 to-slate-500 text-white shadow-xs";
+    if (index === 2) return "bg-gradient-to-br from-amber-700 to-amber-800 text-white shadow-xs";
+    return "bg-slate-200 text-slate-600";
   };
 
   return (
-    <div className="proposals-page">
-      <div className="container">
+    <div className="flex justify-center bg-slate-50 py-10 min-h-[80vh] px-4">
+      <div className="w-full max-w-[1000px] flex flex-col gap-6 mx-auto">
         {/* Back */}
-        <Link href={`/briefs/${briefId}`} className="back-link">
+        <Link href={`/briefs/${briefId}`} className="inline-flex items-center gap-1.5 text-slate-500 hover:text-emerald-500 font-semibold text-sm transition-colors">
           ← Back to Project
         </Link>
 
         {/* Header */}
-        <div className="page-header-card">
-          <div className="header-text">
-            <h1>Proposals ({proposals.length})</h1>
-            <p>Review submitted proposals and find the best seller</p>
+        <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-6 sm:p-7 md:px-8 rounded-xl text-white shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold mb-1">Proposals ({proposals.length})</h1>
+            <p className="text-slate-400 text-sm">Review submitted proposals and find the best seller</p>
           </div>
           {proposals.length >= 1 && (
             <button
-              className="btn-ai-rank"
+              type="button"
+              className="py-2.5 px-5 rounded-lg font-semibold text-sm bg-gradient-to-r from-indigo-500 to-violet-600 hover:brightness-95 text-white border-none transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => aiMutation.mutate()}
               disabled={aiMutation.isPending}
             >
@@ -132,35 +132,35 @@ const Proposals = () => {
 
         {/* AI Loading */}
         {aiMutation.isPending && (
-          <div className="ai-loading-card">
-            <div className="sparkle">✨</div>
-            <h3>Workvence AI is evaluating proposals...</h3>
-            <p>Ranking sellers based on skills, experience, and fit</p>
-            <div className="ai-dots">
-              <span />
-              <span />
-              <span />
+          <div className="bg-white border-2 border-indigo-100 rounded-xl p-10 sm:p-12 text-center flex flex-col items-center gap-4 shadow-xs">
+            <div className="text-4xl animate-pulse">✨</div>
+            <h3 className="text-lg font-bold text-slate-900">Workvence AI is evaluating proposals...</h3>
+            <p className="text-slate-500 text-sm">Ranking sellers based on skills, experience, and fit</p>
+            <div className="flex gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce" />
+              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.16s]" />
+              <span className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.32s]" />
             </div>
           </div>
         )}
 
         {/* AI Recommendation Results */}
         {aiResult && !aiMutation.isPending && (
-          <div className="ai-recommendation-card">
-            <div className="ai-header">
-              <span className="ai-icon">🤖</span>
-              <h2>AI Top 3 Recommendations</h2>
+          <div className="bg-white border-2 border-indigo-200 rounded-xl shadow-xs overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-50/60 to-violet-50/60 p-5 px-6 sm:px-8 border-b border-indigo-100 flex items-center gap-2.5">
+              <span className="text-2xl">🤖</span>
+              <h2 className="text-lg font-bold text-slate-900">AI Top 3 Recommendations</h2>
             </div>
 
             {aiResult.summary && (
-              <div className="ai-rationale">
-                <h4>Analysis Summary</h4>
-                <p>{aiResult.summary}</p>
+              <div className="p-5 px-6 sm:px-8 border-b border-slate-100">
+                <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Analysis Summary</h4>
+                <p className="text-sm text-slate-700 leading-relaxed">{aiResult.summary}</p>
               </div>
             )}
 
-            <div className="ai-top-picks">
-              <h4>Ranked Proposals</h4>
+            <div className="p-5 px-6 sm:px-8 flex flex-col gap-4">
+              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ranked Proposals</h4>
               {(Array.isArray(aiResult)
                 ? aiResult
                 : (aiResult?.top3Recommendations || aiResult?.topProposals || aiResult?.recommendations || aiResult?.data || [])
@@ -175,17 +175,17 @@ const Proposals = () => {
                   return (
                     <div
                       key={proposal._id || index}
-                      className={`ranked-proposal ${
-                        index === 0 ? "rank-1" : ""
+                      className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl border transition-all ${
+                        index === 0 ? "border-indigo-200 bg-indigo-50/30 hover:border-indigo-300" : "border-slate-200 bg-slate-50 hover:border-indigo-300"
                       }`}
                     >
                       <div
-                        className={`rank-badge ${getRankBadgeClass(index)}`}
+                        className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-extrabold shrink-0 ${getRankBadgeClasses(index)}`}
                       >
                         #{index + 1}
                       </div>
-                      <div className="ranked-info">
-                        <div className="seller-name flex items-center gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="text-[15px] font-bold text-slate-900 mb-0.5 flex items-center gap-2">
                           <span>{seller.username || "Seller"}</span>
                           {item.score && (
                             <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-[11px] font-bold tracking-wide">
@@ -193,7 +193,7 @@ const Proposals = () => {
                             </span>
                           )}
                         </div>
-                        <div className="ranked-meta">
+                        <div className="text-xs text-slate-500">
                           {proposal.price && `$${proposal.price}`}
                           {proposal.deliveryTime &&
                             ` · ${proposal.deliveryTime} days`}
@@ -201,19 +201,19 @@ const Proposals = () => {
                         </div>
                         
                         {(item.pros || item.cons) && (
-                          <div className="ai-pros-cons mt-3 grid grid-cols-2 gap-4 text-sm">
+                          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                             {item.pros && item.pros.length > 0 && (
-                              <div className="pros-list bg-green-50 p-2 rounded-md border border-green-100">
-                                <span className="font-bold text-green-700 block mb-1">✅ Pros</span>
-                                <ul className="list-disc pl-4 text-green-800 text-xs space-y-1">
+                              <div className="bg-emerald-50 p-2.5 rounded-lg border border-emerald-100">
+                                <span className="font-bold text-emerald-700 block mb-1 text-xs">✅ Pros</span>
+                                <ul className="list-disc pl-4 text-emerald-800 text-xs space-y-1">
                                   {item.pros.map((pro: string, i: number) => <li key={i}>{pro}</li>)}
                                 </ul>
                               </div>
                             )}
                             {item.cons && item.cons.length > 0 && (
-                              <div className="cons-list bg-red-50 p-2 rounded-md border border-red-100">
-                                <span className="font-bold text-red-700 block mb-1">⚠️ Cons</span>
-                                <ul className="list-disc pl-4 text-red-800 text-xs space-y-1">
+                              <div className="bg-rose-50 p-2.5 rounded-lg border border-rose-100">
+                                <span className="font-bold text-rose-700 block mb-1 text-xs">⚠️ Cons</span>
+                                <ul className="list-disc pl-4 text-rose-800 text-xs space-y-1">
                                   {item.cons.map((con: string, i: number) => <li key={i}>{con}</li>)}
                                 </ul>
                               </div>
@@ -222,7 +222,8 @@ const Proposals = () => {
                         )}
                       </div>
                       <button
-                        className="btn-chat-sm"
+                        type="button"
+                        className="py-2 px-4.5 rounded-lg text-xs font-semibold bg-emerald-500 hover:bg-emerald-600 text-white transition-colors cursor-pointer whitespace-nowrap shadow-xs disabled:opacity-50 disabled:cursor-not-allowed self-end sm:self-center"
                         onClick={() =>
                           chatMutation.mutate({ proposalId: proposal._id, sellerId: targetSellerId, sellerUsername: seller.username })
                         }
@@ -240,20 +241,20 @@ const Proposals = () => {
 
         {/* Proposals List */}
         {isLoading ? (
-          <div className="loader">
+          <div className="w-full flex justify-center items-center py-20">
             <Loader size={45} />
           </div>
         ) : proposals.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">📭</div>
-            <h3>No proposals yet</h3>
-            <p>
+          <div className="text-center py-16 px-6 bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col items-center">
+            <div className="text-5xl mb-4">📭</div>
+            <h3 className="text-xl font-bold text-slate-900 mb-2">No proposals yet</h3>
+            <p className="text-slate-500 text-sm max-w-md">
               Sellers have not submitted proposals yet. Share your project to
               attract more sellers.
             </p>
           </div>
         ) : (
-          <div className="proposals-list">
+          <div className="flex flex-col gap-4">
             {proposals.map((proposal: any) => {
               const seller = typeof proposal.sellerID === 'object' && proposal.sellerID !== null 
                 ? proposal.sellerID 
@@ -272,24 +273,24 @@ const Proposals = () => {
               return (
                 <div 
                   key={proposal._id} 
-                  className={`proposal-card relative transition-all duration-200 ${
-                    isRecommended ? "border-2 border-purple-500 bg-purple-50" : ""
+                  className={`bg-white rounded-xl p-5 sm:p-6 transition-all shadow-xs hover:shadow-md relative overflow-hidden ${
+                    isRecommended ? "border-2 border-indigo-400 bg-indigo-50/20" : "border border-slate-200 hover:border-emerald-500/30"
                   }`}
                 >
                   {isRecommended && (
-                    <div className="absolute -top-3 right-6 bg-gradient-to-br from-purple-500 to-indigo-500 text-white px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide shadow-md">
+                    <div className="absolute top-3 right-4 bg-gradient-to-r from-indigo-500 to-violet-600 text-white px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide shadow-xs">
                       ✨ AI Recommended
                     </div>
                   )}
-                  <div className="proposal-header">
+                  <div className="flex items-start sm:items-center gap-3.5 pb-4 border-b border-slate-100">
                     <img
-                      className="seller-avatar"
+                      className="w-11 h-11 rounded-full object-cover border-2 border-slate-200 shrink-0"
                       src={seller.image || "/media/noavatar.png"}
                       alt=""
                     />
-                    <div className="seller-info">
+                    <div className="flex-1 min-w-0">
                       <div
-                        className="seller-name font-semibold text-lg cursor-pointer hover:text-brand-green transition-colors"
+                        className="font-bold text-base text-slate-900 cursor-pointer hover:text-emerald-500 transition-colors truncate"
                         onClick={() =>
                           targetSellerId &&
                           router.push(`/seller/${targetSellerId}`)
@@ -299,22 +300,22 @@ const Proposals = () => {
                       </div>
                       
                       {/* Enriched Seller Badges */}
-                      <div className="seller-badges flex items-center gap-3 mt-1 mb-1 text-sm">
+                      <div className="flex items-center gap-3 mt-0.5 mb-0.5 text-xs">
                         {seller.starRating !== undefined && (
-                          <div className="badge flex items-center gap-1 text-amber-500 font-medium">
+                          <div className="flex items-center gap-1 text-amber-500 font-medium">
                             <span>⭐</span>
                             <span>{seller.starRating.toFixed(1)}</span>
-                            <span className="text-gray-400">({seller.totalReviews || 0})</span>
+                            <span className="text-slate-400">({seller.totalReviews || 0})</span>
                           </div>
                         )}
                         {seller.completedOrdersCount !== undefined && (
-                          <div className="badge flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-xs font-medium border border-blue-100">
+                          <div className="flex items-center gap-1 text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-[11px] font-medium border border-blue-100">
                             <span>🏆 {seller.completedOrdersCount} Orders Completed</span>
                           </div>
                         )}
                       </div>
 
-                      <div className="seller-meta text-xs text-gray-500 mt-1 flex items-center gap-2">
+                      <div className="text-xs text-slate-400 flex items-center gap-1.5 flex-wrap">
                         {seller.country && <span>📍 {seller.country}</span>}
                         <span>·</span>
                         <span>
@@ -323,24 +324,25 @@ const Proposals = () => {
                       </div>
                     </div>
                     {proposal.price && (
-                      <div className="proposal-price">${proposal.price}</div>
+                      <div className="text-lg sm:text-xl font-extrabold text-emerald-500 shrink-0">${proposal.price}</div>
                     )}
                   </div>
 
-                  <div className="proposal-body">
-                    <p className="cover-letter">{proposal.coverLetter}</p>
+                  <div className="py-4">
+                    <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{proposal.coverLetter}</p>
                   </div>
 
-                  <div className="proposal-footer">
-                    <div className="delivery-info">
+                  <div className="pt-3.5 border-t border-slate-100 flex justify-between items-center">
+                    <div className="text-xs text-slate-500">
                       {proposal.deliveryDays && (
                         <span>
-                          Delivery: <strong>{proposal.deliveryDays} days</strong>
+                          Delivery: <strong className="text-slate-800">{proposal.deliveryDays} days</strong>
                         </span>
                       )}
                     </div>
                     <button
-                      className="btn-initiate-chat"
+                      type="button"
+                      className="py-2 px-5 rounded-lg font-semibold text-sm bg-emerald-500 hover:bg-emerald-600 text-white transition-all cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={() => chatMutation.mutate({ proposalId: proposal._id, sellerId: targetSellerId, sellerUsername: seller.username })}
                       disabled={chatMutation.isPending}
                     >

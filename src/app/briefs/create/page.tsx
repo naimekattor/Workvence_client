@@ -10,7 +10,6 @@ import { axiosFetch } from "@/utils";
 import adminAxios from "@/utils/adminAxios";
 import { useUserStore } from "@/store/userStore";
 import { Loader } from "@/components";
-import "./CreateBrief.scss";
 
 const CATEGORIES = [
   "AI",
@@ -128,45 +127,51 @@ const CreateBrief = () => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const stepClass = (n: number) => {
-    if (n < step) return "step done";
-    if (n === step) return "step active";
-    return "step";
-  };
-
   return (
-    <div className="create-brief">
-      <div className="container">
+    <div className="flex justify-center bg-slate-50 py-10 min-h-[80vh] px-4">
+      <div className="w-full max-w-[780px] flex flex-col gap-6">
         {/* Header */}
-        <div className="page-header">
-          <h1>Post a Job Project</h1>
-          <p>Describe what you need — AI can help structure it for you</p>
+        <div>
+          <h1 className="text-2xl sm:text-[26px] font-bold text-slate-900 mb-1.5">Post a Job Project</h1>
+          <p className="text-slate-500 text-sm sm:text-[15px]">Describe what you need — AI can help structure it for you</p>
         </div>
 
         {/* Progress */}
-        <div className="steps-indicator">
-          <div className={stepClass(1)}>
-            <span className="step-number">1</span>
-            <span className="step-label">Describe</span>
+        <div className="flex items-center bg-white rounded-xl p-4 sm:px-6 border border-slate-200 shadow-xs">
+          <div className="flex items-center gap-2.5 flex-1 relative">
+            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 transition-all ${step >= 1 ? "bg-emerald-500 text-white border-2 border-emerald-500" : "bg-slate-100 text-slate-400 border-2 border-slate-200"}`}>
+              1
+            </span>
+            <span className={`hidden sm:inline text-sm font-semibold whitespace-nowrap ${step >= 1 ? "text-slate-900" : "text-slate-400"}`}>
+              Describe
+            </span>
           </div>
-          <div className={`step-divider ${step > 1 ? "filled" : ""}`} />
-          <div className={stepClass(2)}>
-            <span className="step-number">2</span>
-            <span className="step-label">Review & Edit</span>
+          <div className={`flex-1 sm:flex-[0_0_40px] h-0.5 mx-2 rounded-sm transition-colors ${step > 1 ? "bg-emerald-500" : "bg-slate-200"}`} />
+          <div className="flex items-center gap-2.5 flex-1 relative">
+            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 transition-all ${step >= 2 ? "bg-emerald-500 text-white border-2 border-emerald-500" : "bg-slate-100 text-slate-400 border-2 border-slate-200"}`}>
+              2
+            </span>
+            <span className={`hidden sm:inline text-sm font-semibold whitespace-nowrap ${step >= 2 ? "text-slate-900" : "text-slate-400"}`}>
+              Review & Edit
+            </span>
           </div>
-          <div className={`step-divider ${step > 2 ? "filled" : ""}`} />
-          <div className={stepClass(3)}>
-            <span className="step-number">3</span>
-            <span className="step-label">Published</span>
+          <div className={`flex-1 sm:flex-[0_0_40px] h-0.5 mx-2 rounded-sm transition-colors ${step > 2 ? "bg-emerald-500" : "bg-slate-200"}`} />
+          <div className="flex items-center gap-2.5 flex-1 relative">
+            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 transition-all ${step >= 3 ? "bg-emerald-500 text-white border-2 border-emerald-500" : "bg-slate-100 text-slate-400 border-2 border-slate-200"}`}>
+              3
+            </span>
+            <span className={`hidden sm:inline text-sm font-semibold whitespace-nowrap ${step >= 3 ? "text-slate-900" : "text-slate-400"}`}>
+              Published
+            </span>
           </div>
         </div>
 
         {/* Step 1: Describe */}
         {step === 1 && !aiGenerate.isPending && (
-          <div className="form-card describe-step">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-8 flex flex-col gap-6">
             <div>
-              <h2>What do you need done?</h2>
-              <p className="subtitle">
+              <h2 className="text-xl font-bold text-slate-900 mb-1">What do you need done?</h2>
+              <p className="text-sm text-slate-500 mb-5">
                 Describe your project in plain language. Be as specific as
                 possible — include goals, features, timeline, and budget if you
                 have them in mind.
@@ -176,13 +181,15 @@ const CreateBrief = () => {
               placeholder="e.g. I need a mobile app for my restaurant that lets customers browse the menu, place orders, and pay online. Budget is around $2,000 and I need it within 3 weeks..."
               value={rawInput}
               onChange={(e) => setRawInput(e.target.value)}
+              className="w-full min-h-[180px] p-4 border border-slate-200 rounded-xl text-[15px] leading-relaxed text-slate-800 resize-y outline-none transition-all placeholder:text-slate-400 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 font-inherit"
             />
-            <div className="step-actions">
-              <button className="btn-secondary" onClick={handleSkipAI}>
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-2">
+              <button type="button" className="py-3 px-6 rounded-lg font-semibold text-sm bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer text-center" onClick={handleSkipAI}>
                 Skip AI — Write manually
               </button>
               <button
-                className="btn-ai"
+                type="button"
+                className="py-3 px-6 rounded-lg font-semibold text-sm bg-gradient-to-r from-indigo-500 to-violet-600 hover:brightness-95 text-white border-none transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleAIGenerate}
                 disabled={!rawInput.trim()}
               >
@@ -194,53 +201,56 @@ const CreateBrief = () => {
 
         {/* AI Loading */}
         {step === 1 && aiGenerate.isPending && (
-          <div className="form-card ai-loading">
-            <div className="sparkle">✨</div>
-            <h3>Workvence AI is crafting your project...</h3>
-            <p>This usually takes a few seconds</p>
-            <div className="ai-dots">
-              <span />
-              <span />
-              <span />
+          <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-10 sm:p-14 flex flex-col items-center justify-center gap-4 text-center">
+            <div className="text-4xl animate-pulse">✨</div>
+            <h3 className="text-lg font-bold text-slate-900">Workvence AI is crafting your project...</h3>
+            <p className="text-sm text-slate-500">This usually takes a few seconds</p>
+            <div className="flex gap-1.5 mt-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.16s]" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce [animation-delay:0.32s]" />
             </div>
           </div>
         )}
 
         {/* Step 2: Review & Edit */}
         {step === 2 && (
-          <div className="form-card review-step">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-5 sm:p-8 flex flex-col gap-6">
             <div>
-              <h2>Review & Edit Your Project</h2>
-              <p className="subtitle">
+              <h2 className="text-xl font-bold text-slate-900 mb-1">Review & Edit Your Project</h2>
+              <p className="text-sm text-slate-500 mb-5">
                 Fine-tune the details below before publishing
               </p>
             </div>
 
-            <div className="field-group">
-              <label>Title</label>
+            <div className="flex flex-col gap-1.5 mb-2">
+              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Title</label>
               <input
                 type="text"
                 placeholder="Give your project a clear title"
                 value={form.title}
                 onChange={(e) => updateField("title", e.target.value)}
+                className="w-full p-3 px-3.5 border border-slate-200 rounded-lg text-sm text-slate-800 bg-slate-50/50 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
               />
             </div>
 
-            <div className="field-group">
-              <label>Description</label>
+            <div className="flex flex-col gap-1.5 mb-2">
+              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Description</label>
               <textarea
                 placeholder="Detailed description of the project..."
                 value={form.description}
                 onChange={(e) => updateField("description", e.target.value)}
+                className="w-full min-h-[120px] p-3 px-3.5 border border-slate-200 rounded-lg text-sm text-slate-800 bg-slate-50/50 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 resize-y leading-relaxed"
               />
             </div>
 
-            <div className="field-row">
-              <div className="field-group">
-                <label>Category</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Category</label>
                 <select
                   value={form.category}
                   onChange={(e) => updateField("category", e.target.value)}
+                  className="w-full p-3 px-3.5 border border-slate-200 rounded-lg text-sm text-slate-800 bg-slate-50/50 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                 >
                   <option value="">Select a category</option>
                   {categories.map((c: any) => (
@@ -251,36 +261,39 @@ const CreateBrief = () => {
                 </select>
               </div>
 
-              <div className="field-group">
-                <label>Budget (USD)</label>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Budget (USD)</label>
                 <input
                   type="number"
                   placeholder="e.g. 500"
                   value={form.budget}
                   onChange={(e) => updateField("budget", e.target.value)}
+                  className="w-full p-3 px-3.5 border border-slate-200 rounded-lg text-sm text-slate-800 bg-slate-50/50 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                 />
               </div>
             </div>
 
-            <div className="field-row">
-              <div className="field-group">
-                <label>Delivery Time (Days)</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Delivery Time (Days)</label>
                 <input
                   type="number"
                   placeholder="e.g. 7"
                   value={form.deliveryTime}
                   onChange={(e) => updateField("deliveryTime", e.target.value)}
+                  className="w-full p-3 px-3.5 border border-slate-200 rounded-lg text-sm text-slate-800 bg-slate-50/50 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10"
                 />
               </div>
               <div />
             </div>
 
-            <div className="step-actions">
-              <button className="btn-secondary" onClick={() => setStep(1)}>
+            <div className="flex justify-between items-center gap-4 mt-2">
+              <button type="button" className="py-3 px-6 rounded-lg font-semibold text-sm bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all cursor-pointer" onClick={() => setStep(1)}>
                 ← Back
               </button>
               <button
-                className="btn-primary"
+                type="button"
+                className="py-3 px-7 rounded-lg font-semibold text-sm bg-emerald-500 hover:bg-emerald-600 text-white transition-all cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleSubmit}
                 disabled={postBrief.isPending}
               >
@@ -292,18 +305,18 @@ const CreateBrief = () => {
 
         {/* Step 3: Success */}
         {step === 3 && (
-          <div className="form-card confirm-step">
-            <div className="success-icon">🎉</div>
-            <h2>Project Published Successfully!</h2>
-            <p>
+          <div className="bg-white rounded-xl border border-slate-200 shadow-xs p-8 sm:p-12 text-center flex flex-col items-center">
+            <div className="text-5xl mb-4 animate-in zoom-in duration-300">🎉</div>
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">Project Published Successfully!</h2>
+            <p className="text-slate-500 text-sm sm:text-base mb-6 max-w-md">
               Your project is now live. Sellers can start submitting proposals
               right away.
             </p>
-            <div className="nav-links">
-              <Link href="/briefs/my-briefs" className="btn-primary">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center w-full sm:w-auto">
+              <Link href="/briefs/my-briefs" className="py-3 px-6 rounded-lg font-semibold text-sm bg-emerald-500 hover:bg-emerald-600 text-white transition-all text-center shadow-xs">
                 View My Projects
               </Link>
-              <Link href="/briefs" className="btn-secondary">
+              <Link href="/briefs" className="py-3 px-6 rounded-lg font-semibold text-sm bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 transition-all text-center">
                 Browse All Projects
               </Link>
             </div>
