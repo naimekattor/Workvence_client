@@ -9,7 +9,6 @@ import { Trash2, AlertTriangle, X } from 'lucide-react';
 import { axiosFetch } from "@/utils";
 import { useUserStore } from "@/store/userStore";
 import { Loader } from "@/components";
-import './MyPackages.scss';
 
 const MyPackages = () => {
   const user = useUserStore((state: any) => state.user);
@@ -55,35 +54,37 @@ const MyPackages = () => {
   }, []);
 
   return (
-    <div className='myPackages min-h-screen relative'>
+    <div className="flex justify-center bg-slate-50 py-10 min-h-screen relative px-4">
       {isLoading ? (
-        <div className='loader'>
+        <div className="w-full flex justify-center items-center py-20">
           <Loader size={45} />
         </div>
       ) : error ? (
-        <div className="error-message">Something went wrong</div>
+        <div className="text-center text-red-500 font-medium py-12">Something went wrong</div>
       ) : (
-        <div className="container">
-          <div className="card">
-            <div className="card-header">
-              <div className="header-info">
-                <h1>My Packages</h1>
-                <p>Manage your published service listings</p>
+        <div className="w-full max-w-[1200px] flex flex-col gap-6 mx-auto">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="p-5 sm:p-6 md:px-8 border-b border-slate-200 bg-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900 mb-1">My Packages</h1>
+                <p className="text-sm text-slate-500">Manage your published service listings</p>
               </div>
-              <Link href='/organize' className='link'>
-                <button className="add-btn">Add New Package</button>
+              <Link href="/organize" className="w-full sm:w-auto">
+                <button type="button" className="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-sm py-2.5 px-5 rounded-lg transition-colors cursor-pointer text-center shadow-xs">
+                  Add New Package
+                </button>
               </Link>
             </div>
 
-            <div className="table-responsive">
-              <table>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr>
-                    <th>Image</th>
-                    <th>Title</th>
-                    <th>Price</th>
-                    <th>Sales</th>
-                    <th>Action</th>
+                  <tr className="border-b border-slate-100 bg-slate-50">
+                    <th className="py-3.5 px-4 sm:px-6 text-slate-500 font-semibold text-xs uppercase tracking-wider">Image</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-slate-500 font-semibold text-xs uppercase tracking-wider">Title</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-slate-500 font-semibold text-xs uppercase tracking-wider">Price</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-slate-500 font-semibold text-xs uppercase tracking-wider">Sales</th>
+                    <th className="py-3.5 px-4 sm:px-6 text-slate-500 font-semibold text-xs uppercase tracking-wider">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -91,27 +92,32 @@ const MyPackages = () => {
                     <tr
                       key={pkg._id}
                       onClick={() => navigate.push(`/package/${pkg._id}`)}
-                      className="clickable-row"
+                      className="cursor-pointer transition-colors hover:bg-slate-50/80 border-b border-slate-100"
                     >
-                      <td>
+                      <td className="py-4 px-4 sm:px-6 align-middle">
                         <img
-                          className="cover-img"
+                          className="w-[70px] h-[50px] rounded-lg object-cover border border-slate-200 shrink-0"
                           src={pkg.cover}
                           alt={pkg.title || 'Package Cover'}
                         />
                       </td>
-                      <td className="title-cell">{pkg.title}</td>
-                      <td className="price-cell">
+                      <td className="py-4 px-4 sm:px-6 align-middle font-medium text-slate-800 max-w-[200px] md:max-w-[350px] truncate">
+                        {pkg.title}
+                      </td>
+                      <td className="py-4 px-4 sm:px-6 align-middle font-bold text-slate-900 whitespace-nowrap">
                         {(pkg.price || 0).toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
                         })}
                       </td>
-                      <td className="sales-cell">{pkg.sales || 0}</td>
-                      <td>
-                        <div className="action-buttons">
+                      <td className="py-4 px-4 sm:px-6 align-middle font-semibold text-slate-600 whitespace-nowrap">
+                        {pkg.sales || 0}
+                      </td>
+                      <td className="py-4 px-4 sm:px-6 align-middle">
+                        <div className="flex flex-col sm:flex-row gap-2 whitespace-nowrap">
                           <button
-                            className='edit-btn'
+                            type="button"
+                            className="bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white font-semibold text-[13px] border border-emerald-200 py-1.5 px-3.5 rounded-lg transition-colors cursor-pointer text-center"
                             onClick={(e: any) => {
                               e.stopPropagation();
                               navigate.push(`/organize/${pkg._id}`);
@@ -120,7 +126,8 @@ const MyPackages = () => {
                             Edit
                           </button>
                           <button
-                            className='delete-btn'
+                            type="button"
+                            className="bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white font-semibold text-[13px] border border-rose-200 py-1.5 px-3.5 rounded-lg transition-colors cursor-pointer text-center"
                             onClick={(e: any) => {
                               e.stopPropagation();
                               setPackageToDelete(pkg);
