@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['10.10.30.41'],
-  output: "standalone",
+  output: process.env.VERCEL ? undefined : "standalone",
   images: {
     formats: ['image/avif', 'image/webp'],
     qualities: [75, 85],
